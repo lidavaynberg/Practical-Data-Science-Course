@@ -1,182 +1,335 @@
-# Topic 8: Advanced Topics & Specialization
+# Week 8: From Notebooks to Apps (Streamlit Basics)
 
 ## 📚 Overview
 
-Explore specialized areas of data science and prepare for your career. Cover advanced topics like time series analysis, causal inference, ethics in AI, and develop strategies for professional growth.
+Transform your data analysis into interactive web applications that anyone can use! Learn Streamlit basics to create simple, powerful apps that communicate your social impact findings to stakeholders, policymakers, and the public.
 
 ## 🎯 Learning Objectives
 
-By the end of this topic, you will be able to:
+By the end of this week, you will be able to:
 
-- Analyze complex time series data and build forecasting models
-- Understand causal inference and experimental design
-- Apply ethical principles to AI and data science projects
-- Design and analyze A/B tests effectively
-- Navigate career paths in data science
-- Build a professional portfolio and personal brand
+- Understand why apps matter for social impact communication
+- Create interactive web applications using Streamlit
+- Build apps that allow users to upload data and explore visualizations
+- Add interactive elements (sliders, dropdowns, buttons) to your analysis
+- Deploy apps locally and understand deployment options
+- Design user-friendly interfaces for non-technical audiences
 
-## 📖 Topics Covered
+## 🎓 Session Structure (80 minutes)
 
-### 1. Time Series Analysis & Forecasting
-- Time series decomposition and stationarity
-- ARIMA, SARIMA, and state space models
-- Deep learning for time series (LSTMs, Transformers)
-- Multivariate time series and VAR models
+### Lecture (40 minutes): Why Apps Matter for Social Impact
 
-### 2. Causal Inference & Experimental Design
-- Correlation vs. causation
-- Randomized controlled trials
-- Observational studies and confounding
-- Instrumental variables and natural experiments
+**Topics Covered:**
+- The power of interactive applications for social change
+- Making data accessible to non-technical stakeholders
+- Streamlit fundamentals: turning Python scripts into web apps
+- App design principles for social impact:
+  - **Accessibility**: Easy for anyone to use
+  - **Clarity**: Clear purpose and instructions
+  - **Interactivity**: Let users explore the data themselves
+- Examples of successful social impact apps and dashboards
 
-### 3. A/B Testing & Experimentation
-- Experimental design principles
-- Statistical power and sample size calculation
-- Multi-armed bandits
-- Advanced testing strategies (multi-variate, sequential)
+### Tutorial (40 minutes): Building Your First Streamlit App
 
-### 4. Ethics & Fairness in AI
-- Bias detection and mitigation
-- Fairness metrics and trade-offs
-- Privacy-preserving techniques
-- Responsible AI practices
+**Hands-on Activities:**
+- Install Streamlit and create your first app
+- Build an app that uploads CSV files and shows Plotly charts
+- Add interactive widgets (sliders, selectboxes, file uploaders)
+- Test your app locally using `streamlit run`
+- Practice app design and user experience principles
 
-### 5. Recommendation Systems
-- Collaborative and content-based filtering
-- Matrix factorization techniques
-- Deep learning for recommendations
-- Evaluation metrics and cold start problems
+## 🏗️ Mini-Deliverable
 
-### 6. Career Development
-- Building a data science portfolio
-- Technical interview preparation
-- Industry trends and specializations
-- Networking and personal branding
+**Assignment:** Create a local Streamlit app with at least one visualization and file upload capability.
 
-## 🏗️ Capstone Project: End-to-End Business Solution
+**Requirements:**
+1. **Create a Streamlit app** that addresses your chosen social issue
+2. **Add file upload functionality** so users can explore their own datasets
+3. **Include interactive visualizations** using Plotly within the app
+4. **Add user controls** (sliders, dropdowns, or buttons) for customization
+5. **Test locally** and ensure the app runs smoothly
+6. **Document the app** with clear instructions for users
 
-Design and implement a complete data science solution that addresses a real business problem, incorporating all course concepts.
+### Example Streamlit App Structure:
+```python
+import streamlit as st
+import pandas as pd
+import plotly.express as px
 
-### Project Requirements
-1. **Business problem definition** with clear success metrics
-2. **Data collection and preprocessing** pipeline
-3. **Advanced modeling** with multiple approaches
-4. **Production deployment** with monitoring
-5. **Business impact assessment** and recommendations
+# App title and description
+st.title("📊 Education Equity Explorer")
+st.write("Explore relationships between education funding and outcomes")
 
-### Project Domains (Choose One)
-- **E-commerce**: Recommendation system with demand forecasting
-- **Finance**: Risk assessment with fraud detection
-- **Healthcare**: Predictive modeling with ethical considerations
-- **Marketing**: Customer segmentation with lifetime value prediction
+# Sidebar for user inputs
+st.sidebar.header("Data Upload and Controls")
+
+# File upload
+uploaded_file = st.sidebar.file_uploader(
+    "Upload your education dataset (CSV)", 
+    type=['csv']
+)
+
+if uploaded_file is not None:
+    # Load and display data
+    df = pd.read_csv(uploaded_file)
+    
+    st.write("### Dataset Overview")
+    st.write(f"**Rows:** {len(df)}, **Columns:** {len(df.columns)}")
+    
+    # Show data preview
+    if st.checkbox("Show raw data"):
+        st.write(df.head())
+    
+    # Interactive controls
+    st.sidebar.write("### Visualization Controls")
+    
+    numeric_cols = df.select_dtypes(include=['number']).columns
+    x_axis = st.sidebar.selectbox("Choose X-axis", numeric_cols)
+    y_axis = st.sidebar.selectbox("Choose Y-axis", numeric_cols)
+    
+    # Color by categorical column if available
+    cat_cols = df.select_dtypes(include=['object']).columns
+    color_by = st.sidebar.selectbox("Color by", ['None'] + list(cat_cols))
+    
+    # Create visualization
+    st.write(f"### {y_axis.title()} vs {x_axis.title()}")
+    
+    if color_by != 'None':
+        fig = px.scatter(df, x=x_axis, y=y_axis, color=color_by,
+                        title=f"{y_axis} vs {x_axis} by {color_by}")
+    else:
+        fig = px.scatter(df, x=x_axis, y=y_axis,
+                        title=f"{y_axis} vs {x_axis}")
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Summary statistics
+    st.write("### Key Statistics")
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.metric("Average " + x_axis, f"{df[x_axis].mean():.2f}")
+    
+    with col2:
+        st.metric("Average " + y_axis, f"{df[y_axis].mean():.2f}")
+    
+else:
+    st.info("👆 Please upload a CSV file to begin exploring!")
+    
+    # Show example with sample data
+    st.write("### Example: Global Education Data")
+    
+    # Create sample data for demonstration
+    sample_data = {
+        'country': ['USA', 'Finland', 'Singapore', 'Canada', 'Germany'],
+        'education_spending_pct_gdp': [6.2, 6.8, 4.9, 5.3, 4.9],
+        'literacy_rate': [99, 100, 97, 99, 99],
+        'mean_years_schooling': [13.4, 12.9, 11.9, 13.3, 14.1]
+    }
+    
+    sample_df = pd.DataFrame(sample_data)
+    fig = px.scatter(sample_df, 
+                    x='education_spending_pct_gdp', 
+                    y='literacy_rate',
+                    hover_name='country',
+                    title='Education Spending vs Literacy Rate')
+    
+    st.plotly_chart(fig, use_container_width=True)
+```
 
 ## 📁 Files Structure
 
 ```
-topic8/
+week8/
 ├── README.md
 ├── notebooks/
-│   ├── 01_time_series_analysis.ipynb
-│   ├── 02_causal_inference.ipynb
-│   ├── 03_ab_testing.ipynb
-│   ├── 04_recommendation_systems.ipynb
-│   ├── 05_ethics_fairness.ipynb
-│   └── 06_capstone_project.ipynb
-├── capstone/
-│   ├── problem_definition/
-│   ├── data_pipeline/
-│   ├── modeling/
-│   ├── deployment/
-│   └── documentation/
-├── career_resources/
-│   ├── portfolio_examples/
-│   ├── interview_prep/
-│   └── industry_insights/
-└── assignments/
-    ├── assignment_1.md
-    └── assignment_2.md
+│   ├── lecture_streamlit_intro.ipynb
+│   ├── tutorial_first_app.ipynb
+│   └── assignment_social_impact_app.ipynb
+├── apps/
+│   ├── education_explorer.py
+│   ├── climate_dashboard.py
+│   └── health_outcomes_app.py
+├── examples/
+│   ├── simple_app_example.py
+│   └── advanced_features_demo.py
+└── resources/
+    ├── streamlit_cheatsheet.md
+    ├── app_design_principles.md
+    └── deployment_options.md
 ```
 
-## 🎯 Specialization Tracks
+## 📖 Key Concepts Introduced
 
-Based on your interests, consider these specialization paths:
+### Streamlit Fundamentals
+- **`st.title()` and `st.write()`**: Display text and headers
+- **`st.sidebar`**: Create a sidebar for controls and inputs
+- **`st.file_uploader()`**: Allow users to upload their own data
+- **`st.selectbox()`, `st.slider()`**: Interactive widgets for user input
+- **`st.plotly_chart()`**: Display interactive Plotly visualizations
+- **`st.columns()`**: Create multi-column layouts
 
-### 🤖 AI/ML Engineer
-- Focus on model deployment and MLOps
-- Advanced deep learning and model optimization
-- Production systems and scalability
+### Essential Streamlit Patterns
+```python
+import streamlit as st
+import pandas as pd
+import plotly.express as px
 
-### 📊 Data Analyst/Scientist
-- Advanced statistics and experimental design
-- Business intelligence and visualization
-- Domain expertise development
+# Basic app structure
+st.title("My Social Impact App")
+st.write("Description of what the app does")
 
-### 🔬 Research Scientist
-- Cutting-edge algorithms and techniques
-- Academic research and publication
-- Theoretical foundations and innovation
+# File upload
+uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
 
-### 💼 Data Science Manager
-- Team leadership and project management
-- Business strategy and stakeholder communication
-- Technical architecture and decision making
+if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+    
+    # Interactive controls
+    column = st.selectbox("Choose a column", df.columns)
+    
+    # Visualization
+    fig = px.histogram(df, x=column)
+    st.plotly_chart(fig)
+else:
+    st.info("Please upload a file to get started!")
+```
 
-## 🔗 Advanced Libraries & Tools
+### App Design for Social Impact
+- **Clear Purpose**: Users should immediately understand what your app does
+- **Simple Interface**: Don't overwhelm with too many options
+- **Helpful Instructions**: Guide users through the process
+- **Meaningful Defaults**: Start with sensible default settings
+- **Error Handling**: Gracefully handle invalid inputs or missing data
 
-- **statsmodels**: Statistical modeling
-- **prophet**: Time series forecasting
-- **dowhy**: Causal inference
-- **fairlearn**: AI fairness
-- **surprise**: Recommendation systems
-- **mlflow**: Experiment tracking
+## 🎥 Video Resources
 
-## 📚 Continuing Education
+1. **Introduction to Streamlit for Social Good** (15 min)
+2. **Building Your First Interactive App** (25 min)
+3. **Adding User Controls and Interactivity** (20 min)
+4. **App Design and User Experience** (10 min)
 
-### Advanced Courses
-- Deep Learning Specialization
-- MLOps Engineering
-- Specialized Domain Courses
+## 🌍 Social Impact App Ideas
 
-### Certifications
-- Cloud platform certifications (AWS, GCP, Azure)
-- Specialized ML certifications
-- Industry-specific certifications
+### Education Equity Dashboard
+- Upload school district data
+- Compare funding vs. outcomes
+- Interactive maps and trend analysis
+- Filter by demographics or geography
 
-### Professional Development
-- Conference participation (NeurIPS, ICML, KDD)
-- Open source contributions
-- Technical blogging and speaking
+### Climate Change Explorer
+- Visualize temperature and CO2 data
+- Compare countries and regions
+- Show projections and scenarios
+- Interactive timeline controls
 
-## 🏆 Final Assessment
+### Health Outcomes Analyzer
+- Explore health indicators by country/region
+- Compare interventions and outcomes
+- Interactive correlation analysis
+- Demographic breakdowns
 
-Your capstone project will be evaluated on:
+### Economic Development Tracker
+- Visualize poverty and development indicators
+- Compare progress across countries
+- Show relationship between different factors
+- Interactive goal tracking (SDGs)
 
-1. **Technical Excellence** (40%)
-   - Code quality and documentation
-   - Model performance and validation
-   - Technical innovation
+## 🎨 Streamlit Layout and Styling
 
-2. **Business Impact** (30%)
-   - Problem definition and relevance
-   - Solution effectiveness
-   - Business value demonstration
+### Layout Options
+```python
+# Columns
+col1, col2, col3 = st.columns(3)
+with col1:
+    st.metric("Metric 1", "Value 1")
 
-3. **Communication** (20%)
-   - Documentation quality
-   - Presentation skills
-   - Stakeholder engagement
+# Sidebar
+st.sidebar.title("Controls")
+option = st.sidebar.selectbox("Choose option", ['A', 'B', 'C'])
 
-4. **Ethics & Responsibility** (10%)
-   - Ethical considerations
-   - Bias assessment
-   - Responsible AI practices
+# Expander for optional content
+with st.expander("Advanced Options"):
+    advanced_setting = st.checkbox("Enable advanced mode")
+
+# Tabs for organization
+tab1, tab2, tab3 = st.tabs(["Overview", "Analysis", "About"])
+with tab1:
+    st.write("Overview content")
+```
+
+### Interactive Widgets
+```python
+# User inputs
+text_input = st.text_input("Enter text")
+number = st.number_input("Pick a number", min_value=0, max_value=100)
+slider_val = st.slider("Choose value", 0, 100, 50)
+selectbox_choice = st.selectbox("Choose option", ['A', 'B', 'C'])
+multiselect = st.multiselect("Choose multiple", ['A', 'B', 'C'])
+date = st.date_input("Pick a date")
+```
+
+## 🚀 Deployment Options
+
+### Local Development
+```bash
+# Install Streamlit
+pip install streamlit
+
+# Run your app
+streamlit run your_app.py
+```
+
+### Cloud Deployment (Next Steps)
+- **Streamlit Cloud**: Free hosting for public apps
+- **Heroku**: Free tier available for simple apps
+- **GitHub Pages**: For static content
+- **Google Colab**: Can run Streamlit with some setup
+
+## 🔗 Additional Resources
+
+### Streamlit Documentation
+- [Streamlit Documentation](https://docs.streamlit.io/)
+- [Streamlit Gallery](https://streamlit.io/gallery)
+- [Streamlit Components](https://streamlit.io/components)
+
+### App Examples and Inspiration
+- [Streamlit for Social Good](https://blog.streamlit.io/tag/social-good/)
+- [COVID-19 Dashboards](https://github.com/streamlit/demo-covid-19)
+- [Climate Change Apps](https://github.com/topics/climate-change-streamlit)
+
+## ❓ Common Questions
+
+**Q: Do I need to know web development to use Streamlit?**
+A: No! Streamlit handles all the web development complexity. You just write Python.
+
+**Q: Can users interact with my app in real-time?**
+A: Yes! Streamlit apps are fully interactive. When users change inputs, the app updates immediately.
+
+**Q: How do I make my app look professional?**
+A: Focus on clear layouts, helpful text, and logical organization. Streamlit's defaults look good!
+
+**Q: Can I add my own custom styling?**
+A: Yes, but start with Streamlit's built-in options. Custom CSS is possible but not necessary for this course.
+
+## 🆘 Getting Help
+
+- **Discussion Forum**: Share your apps and get feedback
+- **Office Hours**: Tuesdays 6-7 PM
+- **AI Assistants**: Great for Streamlit syntax and troubleshooting
+- **Peer Support**: Test each other's apps and provide UX feedback
+
+## 📈 Assessment Criteria
+
+Your Streamlit app will be evaluated on:
+- **Functionality**: App runs without errors and serves its purpose
+- **User Experience**: Easy to understand and use
+- **Interactivity**: Meaningful use of widgets and user controls
+- **Social Impact**: Clear connection to social issues and useful insights
+- **Code Quality**: Well-organized code with appropriate comments
 
 ---
 
-**Congratulations on completing the Practical Data Science Course!**
+**Next Week**: [Week 9: Project Office Hours](../week9/README.md)
 
-Continue your journey with specialized tracks and real-world applications.
-
-**Previous Topic**: [Topic 7: Model Deployment & MLOps](../topic7/README.md)
-
-**Course Overview**: [Main README](../README.md)
+**Previous Week**: [Week 7: Automating Workflows with Functions + Using AI to Scale Code](../week7/README.md)
