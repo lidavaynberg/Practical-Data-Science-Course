@@ -15,7 +15,7 @@ By the end of this week, you will be able to:
 
 ## 🎓 Session Resources 
 
-- Lecture: [Why Data Science for Social Impact?]()
+- Lecture: [Why Data Science for Social Impact?](https://docs.google.com/presentation/d/17Fcwv9DDYndaC-2RxRJF8dFKlh4zY-yy4RYkRDxlSXo/edit?slide=id.g3b8bdafda8b_0_98#slide=id.g3b8bdafda8b_0_98)
 
 - Tutorial: [Your First Python Steps](../week1/notebooks/tutorial_python_basics.ipynb)
 
