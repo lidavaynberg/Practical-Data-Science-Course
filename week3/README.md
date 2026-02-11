@@ -14,7 +14,7 @@ By the end of this week, you will be able to:
 - Use Pandas to answer questions about trends and relationships in social impact data
 ## 🎓 Session Resources
 
-- Lecture: [Working with DataFrames II: Cleaning & Transforming Data](LINK_TO_SLIDES)
+- Lecture: [Working with DataFrames II: Cleaning & Transforming Data](https://docs.google.com/presentation/d/1YnrgVnYriaSlPi6Lya5BZCTBzdT1SCJUrlox5j-yA9w/edit?slide=id.g3b62d4b0429_0_32#slide=id.g3b62d4b0429_0_32)
 - Tutorial: [DataFrames II: Cleaning & Transforming Data](../week3/notebooks/tutorial_dataframes_advanced.ipynb)
 ## 🏗️ Mini-Deliverable
 
